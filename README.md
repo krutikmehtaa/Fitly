@@ -1,4 +1,4 @@
-# FitBuddy 🏋️‍♂️🥗 — Your AI-Powered Family Fitness & Nutrition Assistant
+# FitBuddy 🏋️‍♂️🥗 — AI-Powered Family Health Assistant
 
 FitBuddy is a full-stack AI-driven platform that generates personalized 7-day fitness and meal plans for individuals and families. It adapts to dietary needs, allergens, fitness goals, and medical conditions, offering a smart and engaging user experience. FitBuddy includes support for multiple family members, intuitive dashboards, and will soon evolve to offer learning-based auto-adjustments based on user feedback.
 
