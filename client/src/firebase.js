@@ -11,13 +11,13 @@ const provider = new GoogleAuthProvider();
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyDIq28gokgnwWDjp9WfWkcfNTWlgAUjwng",
-  authDomain: "fitbuddy-a37df.firebaseapp.com",
-  projectId: "fitbuddy-a37df",
-  storageBucket: "fitbuddy-a37df.firebasestorage.app",
-  messagingSenderId: "572601960845",
-  appId: "1:572601960845:web:ed1a15714a2afa356cd5c4",
-  measurementId: "G-GSJ5K0663F"
+  apiKey: "YOUR_KEY_HERE",
+  authDomain: "YOUR_FIREBASE_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET_ID",
+  messagingSenderId: "YOUR_ID",
+  appId: "YOUR_APP_ID",
+  measurementId: "YOUR_MEASUREMENT_ID"
 };
 
 // Initialize Firebase
