@@ -9,8 +9,8 @@ FitBuddy is a full-stack AI-driven platform that generates personalized health p
 - Authentication & Role Management (Google OAuth + manual signup)
 - Manage multiple family members under one account
 - Personalized health plans with diet type & allergen customization
-- Visual analytics dashboard (diet, goals, medical stats)
 - Save plan history by user and family member
+- Upcoming: Visual analytics dashboard (diet, goals, medical stats)
 - Upcoming: Feedback Loop + Smart Auto-Adaptation (weekly auto-scheduling)
 - Upcoming: Role-Based Access for parents/trainers vs. members
 - Upcoming: Export to PDF / Telegram / Email
