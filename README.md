@@ -65,7 +65,7 @@ AI/ML Logic:
    ```bash
     # Backend
     cd server
-    npm run dev
+    nodemon server.js
 
     # Frontend
     cd ../client
