@@ -14,6 +14,7 @@ const familyMemberSchema = new mongoose.Schema({
 const familySchema = new mongoose.Schema(
   {
     userId: { type: String, required: true }, // ✅ Use ObjectId instead of String
+
     family: { type: [familyMemberSchema], default: [] },
     dietType: { 
       type: String, 
