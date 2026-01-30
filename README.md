@@ -42,7 +42,6 @@
 - Google Gemini API
 - Hugging Face Inference API
 - Python
-- 
 ---
 
 ## Quick Start
