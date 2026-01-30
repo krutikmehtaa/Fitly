@@ -40,7 +40,11 @@ familyMemberSchema.pre('save', function(next) {
 
 const familySchema = new mongoose.Schema(
   {
+
     userId: { type: String, required: true },
+
+    userId: { type: String, required: true }, // ✅ Use ObjectId instead of String
+
     family: { type: [familyMemberSchema], default: [] },
   },
   { timestamps: true }
