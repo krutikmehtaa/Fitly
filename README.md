@@ -87,6 +87,10 @@ node server.js
 # Terminal 2: Frontend
 cd client
 npm run dev
+
+# Build for production
+cd client
+npm run build
 ```
 
 Visit `http://localhost:5173`
@@ -164,36 +168,3 @@ Fitly/
 - Shared and personal plans
 
 ---
-
-## Design Philosophy
-
-- **Minimalistic**: Clean, uncluttered UI
-- **Glassmorphism**: Modern frosted glass effects
-- **Smooth Animations**: Framer Motion transitions
-- **Responsive**: Mobile-first design
-- **Accessible**: WCAG-compliant components
-
----
-
-## Development
-
-```bash
-# Backend dev (with nodemon)
-cd server
-npm install -g nodemon
-nodemon server.js
-
-# Frontend dev
-cd client
-npm run dev
-
-# Build for production
-cd client
-npm run build
-```
-
----
-
-## License
-
-[MIT License](LICENSE)
