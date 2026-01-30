@@ -1,5 +1,230 @@
-/* src/index.css */
-body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --gradient-primary: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);
+    --gradient-accent: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+    --gradient-dark: linear-gradient(135deg, #042f2e 0%, #134e4a 100%);
+    --glass-bg: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.08);
+  }
+
+  * {
+    box-sizing: border-box;
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply font-sans antialiased;
+    @apply bg-surface-950 text-white;
+    @apply min-h-screen;
+    background-image: 
+      radial-gradient(ellipse at top, rgba(20, 184, 166, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at bottom right, rgba(249, 115, 22, 0.05) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+
+  ::selection {
+    @apply bg-primary-500/30 text-white;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-surface-900;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary-700 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary-600;
+  }
+}
+
+@layer components {
+  /* Glass card effect */
+  .glass-card {
+    @apply bg-white/[0.03] backdrop-blur-xl;
+    @apply border border-white/[0.08];
+    @apply rounded-2xl;
+    @apply shadow-glow;
+  }
+
+  .glass-card-hover {
+    @apply glass-card;
+    @apply transition-all duration-300;
+    @apply hover:bg-white/[0.06] hover:border-white/[0.12];
+    @apply hover:shadow-glow-lg hover:-translate-y-1;
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-primary-400 via-primary-300 to-accent-400;
+  }
+
+  .gradient-text-primary {
+    @apply bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-primary-400 to-primary-300;
+  }
+
+  /* Primary button */
+  .btn-primary {
+    @apply px-6 py-3 rounded-xl font-semibold;
+    @apply bg-gradient-to-r from-primary-600 to-primary-500;
+    @apply text-white shadow-glow;
+    @apply transition-all duration-300;
+    @apply hover:from-primary-500 hover:to-primary-400;
+    @apply hover:shadow-glow-lg hover:-translate-y-0.5;
+    @apply active:translate-y-0;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0;
+  }
+
+  /* Accent button */
+  .btn-accent {
+    @apply px-6 py-3 rounded-xl font-semibold;
+    @apply bg-gradient-to-r from-accent-600 to-accent-500;
+    @apply text-white;
+    @apply transition-all duration-300;
+    @apply hover:from-accent-500 hover:to-accent-400;
+    @apply hover:shadow-lg hover:-translate-y-0.5;
+    @apply active:translate-y-0;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /* Ghost button */
+  .btn-ghost {
+    @apply px-6 py-3 rounded-xl font-semibold;
+    @apply bg-white/5 border border-white/10;
+    @apply text-white;
+    @apply transition-all duration-300;
+    @apply hover:bg-white/10 hover:border-white/20;
+    @apply active:bg-white/5;
+  }
+
+  /* Input styles */
+  .input-field {
+    @apply w-full px-4 py-3 rounded-xl;
+    @apply bg-white/[0.05] border border-white/[0.1];
+    @apply text-white placeholder-white/40;
+    @apply transition-all duration-300;
+    @apply focus:outline-none focus:border-primary-500/50 focus:bg-white/[0.08];
+    @apply focus:ring-2 focus:ring-primary-500/20;
+  }
+
+  .input-label {
+    @apply block text-sm font-medium text-white/70 mb-2;
+  }
+
+  /* Select styles */
+  .select-field {
+    @apply w-full px-4 py-3 rounded-xl;
+    @apply bg-white/[0.05] border border-white/[0.1];
+    @apply text-white;
+    @apply transition-all duration-300;
+    @apply focus:outline-none focus:border-primary-500/50 focus:bg-white/[0.08];
+    @apply focus:ring-2 focus:ring-primary-500/20;
+    @apply cursor-pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='rgba(255,255,255,0.5)'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1.25rem;
+  }
+
+  .select-field option {
+    @apply bg-surface-900 text-white;
+  }
+
+  /* Checkbox styles */
+  .checkbox-custom {
+    @apply w-5 h-5 rounded-md;
+    @apply bg-white/[0.05] border border-white/[0.2];
+    @apply checked:bg-primary-500 checked:border-primary-500;
+    @apply transition-all duration-200;
+    @apply cursor-pointer;
+    @apply focus:ring-2 focus:ring-primary-500/30 focus:ring-offset-0;
+  }
+
+  /* Tag/Chip styles */
+  .tag {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
+    @apply bg-primary-500/20 text-primary-300 border border-primary-500/30;
+  }
+
+  .tag-accent {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
+    @apply bg-accent-500/20 text-accent-300 border border-accent-500/30;
+  }
+
+  /* Section headers */
+  .section-title {
+    @apply text-3xl md:text-4xl font-display font-bold;
+    @apply gradient-text;
+  }
+
+  .section-subtitle {
+    @apply text-lg text-white/60;
+    @apply max-w-2xl;
+  }
+
+  /* Stat card */
+  .stat-card {
+    @apply glass-card p-6;
+    @apply flex flex-col gap-2;
+  }
+
+  .stat-value {
+    @apply text-3xl font-bold gradient-text-primary;
+  }
+
+  .stat-label {
+    @apply text-sm text-white/50 uppercase tracking-wider;
+  }
+
+  /* Divider */
+  .divider {
+    @apply h-px bg-gradient-to-r from-transparent via-white/10 to-transparent;
+  }
+
+  /* Loading spinner */
+  .spinner {
+    @apply w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin;
+  }
+
+  /* Floating orbs for background decoration */
+  .floating-orb {
+    @apply absolute rounded-full blur-3xl opacity-20;
+    @apply animate-float;
+  }
+}
+
+@layer utilities {
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+  .animation-delay-600 {
+    animation-delay: 600ms;
+  }
+  .animation-delay-1000 {
+    animation-delay: 1000ms;
+  }
 }

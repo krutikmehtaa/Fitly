@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 
 const getInitialMember = () => ({
-  id: Date.now() + Math.random(), // Unique ID for React key
+  id: Date.now() + Math.random(),
   fullName: "",
   age: "",
   gender: "",
   height: "",
-  weight: ""
+  weight: "",
+  conditions: ""
 });
 
 const genderOptions = [
@@ -18,18 +18,45 @@ const genderOptions = [
   { value: "Female", icon: "👩", label: "Female" },
 ];
 
-const Home = () => {
-  const [family, setFamily] = useState(() => [getInitialMember()]);
-  const [loading, setLoading] = useState(false);
+const EditFamily = () => {
+  const [family, setFamily] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-  const navigate = useNavigate();
-  const { setIsRegistered, currentUser } = useAuth();
+  const [success, setSuccess] = useState("");
+  const { currentUser } = useAuth();
+
+  useEffect(() => {
+    async function fetchFamily() {
+      if (!currentUser?.uid) return;
+
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/api/family/family?userId=${currentUser.uid}`
+        );
+        const familyData = response.data.family || [];
+        // Add IDs to existing members for React keys
+        const familyWithIds = familyData.map((member, idx) => ({
+          ...member,
+          id: member.id || Date.now() + idx + Math.random()
+        }));
+        setFamily(familyWithIds.length > 0 ? familyWithIds : [getInitialMember()]);
+      } catch (err) {
+        console.error("Error fetching family:", err);
+        setFamily([getInitialMember()]);
+      }
+      setLoading(false);
+    }
+
+    fetchFamily();
+  }, [currentUser]);
 
   const handleChange = (index, field, value) => {
     const updated = [...family];
     updated[index][field] = value;
     setFamily(updated);
     setError("");
+    setSuccess("");
   };
 
   const addFamilyMember = () => {
@@ -41,7 +68,12 @@ const Home = () => {
   };
 
   const deleteFamilyMember = (memberId) => {
+    if (family.length <= 1) {
+      setError("You must have at least one family member");
+      return;
+    }
     setFamily(prevFamily => prevFamily.filter(member => member.id !== memberId));
+    setSuccess("");
   };
 
   const validateAll = () => {
@@ -53,39 +85,40 @@ const Home = () => {
     return true;
   };
 
-  const handleSubmit = async () => {
+  const handleSave = async () => {
     if (!validateAll()) {
       setError("Please fill all required fields for all family members");
       return;
     }
-    
-    setLoading(true);
+
+    setSaving(true);
+    setError("");
     try {
+      // Remove the 'id' field before sending to server
+      const familyToSave = family.map(({ id, ...rest }) => rest);
+      
       await axios.post("http://localhost:5000/api/family", {
         userId: currentUser.uid,
-        family,
+        family: familyToSave,
       });
-      setIsRegistered(true);
-      navigate("/planner");
+      setSuccess("Family details updated successfully!");
     } catch (err) {
-      console.error("Failed to register family:", err);
+      console.error("Failed to save family:", err);
       setError("Failed to save family details. Please try again.");
     }
-    setLoading(false);
+    setSaving(false);
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
-  };
+  if (loading) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="spinner w-8 h-8 border-2" />
+          <p className="text-white/60">Loading family details...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen py-12 px-4">
@@ -94,52 +127,51 @@ const Home = () => {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
+          className="text-center mb-10"
         >
-          <motion.div
-            initial={{ scale: 0.8 }}
-            animate={{ scale: 1 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-400 text-sm font-medium mb-6"
-          >
-            <span className="w-2 h-2 rounded-full bg-primary-400 animate-pulse" />
-            Step 1 of 2: Family Setup
-          </motion.div>
-          
-          <h1 className="text-4xl md:text-5xl font-display font-bold gradient-text mb-4">
-            Welcome to Fitly!
+          <h1 className="text-4xl font-display font-bold gradient-text mb-4">
+            Edit Family Details
           </h1>
           <p className="text-lg text-white/60 max-w-2xl mx-auto">
-            Your personalized AI fitness coach and nutritionist. Add your family members
-            to receive customized health plans for everyone.
+            Update your family members' information. Changes will be reflected in future plan generations.
           </p>
         </motion.div>
 
-        {/* Error Message */}
+        {/* Messages */}
         <AnimatePresence>
           {error && (
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 max-w-2xl mx-auto"
+              className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20"
             >
               <p className="text-red-400 text-sm text-center">{error}</p>
+            </motion.div>
+          )}
+          {success && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="mb-6 p-4 rounded-xl bg-green-500/10 border border-green-500/20"
+            >
+              <p className="text-green-400 text-sm text-center flex items-center justify-center gap-2">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                {success}
+              </p>
             </motion.div>
           )}
         </AnimatePresence>
 
         {/* Family Members */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="space-y-6"
-        >
+        <div className="space-y-6">
           <AnimatePresence>
             {family.map((member, index) => (
               <motion.div
                 key={member.id}
-                variants={itemVariants}
                 layout
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -272,11 +304,26 @@ const Home = () => {
                       </span>
                     </div>
                   </div>
+
+                  {/* Medical Conditions */}
+                  <div className="md:col-span-2">
+                    <label className="input-label">
+                      Medical Conditions 
+                      <span className="text-white/30 font-normal ml-2">(Optional)</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={member.conditions}
+                      onChange={(e) => handleChange(index, "conditions", e.target.value)}
+                      className="input-field"
+                      placeholder="e.g., Diabetes, Hypertension, Asthma..."
+                    />
+                  </div>
                 </div>
               </motion.div>
             ))}
           </AnimatePresence>
-        </motion.div>
+        </div>
 
         {/* Actions */}
         <motion.div
@@ -300,42 +347,30 @@ const Home = () => {
           </motion.button>
 
           <motion.button
-            onClick={handleSubmit}
-            disabled={loading}
+            onClick={handleSave}
+            disabled={saving}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             className="btn-primary flex items-center gap-2 px-8"
           >
-            {loading ? (
+            {saving ? (
               <>
                 <div className="spinner" />
                 <span>Saving...</span>
               </>
             ) : (
               <>
-                <span>Continue to Planner</span>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
+                <span>Save Changes</span>
               </>
             )}
           </motion.button>
-        </motion.div>
-
-        {/* Info tip */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="mt-8 text-center"
-        >
-          <p className="text-white/40 text-sm">
-            💡 Tip: Add details for each family member to get personalized meal and workout plans for everyone
-          </p>
         </motion.div>
       </div>
     </div>
   );
 };
 
-export default Home;
+export default EditFamily;

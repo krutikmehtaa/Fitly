@@ -21,12 +21,14 @@ const planRoutes = require("./routes/planRoutes");
 const familyRoutes = require("./routes/familyRoutes");
 const authRoutes = require("./routes/authRoutes");
 const logRoutes = require("./routes/logRoutes");
+const wellnessRoutes = require("./routes/wellnessRoutes");
 
 app.use("/api/user", userRoutes);
 app.use("/api/plan", planRoutes);
 app.use("/api/family", familyRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/log", logRoutes);
+app.use("/api/wellness", wellnessRoutes);
 
 // Test endpoint
 app.get('/test-log', (req, res) => {

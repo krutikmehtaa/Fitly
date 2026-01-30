@@ -23,7 +23,7 @@ router.get("/family", async (req, res) => {
 });
 
 
-// POST /api/user/family
+// POST /api/family - Create or update family members
 router.post("/", async (req, res) => {
   const { userId, family, dietType, allergens } = req.body;
 
@@ -31,14 +31,28 @@ router.post("/", async (req, res) => {
     return res.status(400).json({ error: "Missing userId or family array" });
   }
 
+  // Validate family data
+  for (let i = 0; i < family.length; i++) {
+    const member = family[i];
+    if (!member.fullName || !member.age || !member.gender || !member.height || !member.weight) {
+      return res.status(400).json({ error: `Invalid data for family member ${i + 1}` });
+    }
+  }
+
   try {
+    // Use upsert to create or update
     const updated = await Family.findOneAndUpdate(
       { userId },
-      { family, dietType, allergens },
-      { upsert: true, new: true }
+      { 
+        userId,
+        family, 
+        ...(dietType && { dietType }), 
+        ...(allergens && { allergens }) 
+      },
+      { upsert: true, new: true, runValidators: true }
     );
 
-    res.status(201).json({ message: "Family members saved", data: updated });
+    res.status(200).json({ message: "Family members saved successfully", data: updated });
   } catch (err) {
     console.error("Error saving family members:", err);
     res.status(500).json({ error: "Failed to save family members" });
